@@ -1,5 +1,5 @@
 #Calculadora con interfaz gráfica en Python usando tkinter versión 3.0.
-
+from tkinter import *
 import tkinter as tk
 import os
 import Operaciones as op
@@ -9,13 +9,17 @@ submenu_monedas_visible = False
 def mostrar_tutorial():
     ventana = tk.Toplevel(raiz)
     ventana.title("Tutorial de funciones")
-    ventana.geometry("600x600")
-    ventana.config(bg="#1A1A1A")
-    ventana.resizable(False, False)
-    explicacion = tk.Text(ventana, wrap="word", bg="#1A1A1A", fg="#39FF14", font=("Consolas", 12))
-    explicacion.pack(expand=True, fill="both", padx=10, pady=10)
+    ventana.geometry("1100x700")
+    explicacion = tk.Text(ventana, wrap="word", bg="#2C2C2C", fg="#E5E5E5", font=("Consolas", 12), bd=0, relief="flat")
+    explicacion.pack(expand=True, fill="both")
 
     texto = """
+Bienvenido al tutorial de la calculadora.
+
+Esta calculadora permite realizar operaciones matemáticas avanzadas y conversiones de unidades.
+Puedes ingresar expresiones matemáticas directamente en la entrada de texto y presionar Enter o el botón "=" para calcular el resultado.
+También puedes usar los botones para insertar números y operaciones de manera más rápida.
+Para ingresar números mediante el teclado, asegúrate de que la entrada esté activa (haz clic en ella (esta en la parte superior del todo, la que esta en el medio de las funciones y la parte superior es donde se mostrara el resultado, la de arriba es donde se mostrara la operación a realizar)o usa Tab para seleccionarla).
 Funciones disponibles:
 
 • (): Paréntesis para agrupar operaciones.
@@ -45,16 +49,34 @@ Funciones disponibles:
 • e: Constante de Euler.
 • π: Número pi.
 • x!: Factorial de x.
-• hypot(x, y): Hipotenusa de un triángulo rectángulo.
+• hypot(x, y): Hipotenusa de un triángulo rectángulo. (Ingresa los dos catetos)
 • exp(x): Exponencial de x.
+
+• EXTRAS:
+
 • COP(x): Convierte pesos colombianos a dólares.
 • USD(x): Convierte dólares a euros.
 • EUR(x): Convierte euros a pesos colombianos.
 • kg(x): Convierte kilogramos a libras.
 • g(x): Convierte gramos a onzas.
 
+• ERRORES:
+
+• ValueError: Si se ingresa un valor númerico no válido (ej: letras)\n.
+• ZeroDivisionError: Si se intenta dividir por cero (Puede presentarse en otras operaciones)\n.
+• SyntaxError: Si la expresión a operar ingresada no es válida (ej: paréntesis sin cerrar)\n.
+• TypeError: Si se intenta realizar una operación con tipos de datos incompatibles (ej: sumar un número y una cadena de texto)\n.
+• NameError: Si se usa una variable no definida en la expresión del diccionario\n.
+• AttributeError: Si se intenta acceder a un método que no existe en un objeto (ej: numero = 10 \n numero.append(5) los enteros no poseen método append)\n.
+• IndexError: Si se intenta acceder a un índice fuera del rango de una lista o cadena (ej: lista = [1, 2, 3] \n lista[5])\n.
+• KeyError: Si se intenta acceder a una clave que no existe en un diccionario (ej: diccionario = {'a': 1, 'b': 2} \n diccionario['c'])\n.
+• OverflowError: Si se intenta realizar una operación que excede el límite de tamaño de un número (ej: 10**1000)\n.
+• MemoryError: Si se intenta usar más memoria de la disponible (puede ocurrir con listas muy grandes o recursiones profundas)\n.
+• RecursionError: Si se excede el límite de recursión al llamar a una función recursiva demasiadas veces (ej: fibo(1000) si no se usa memorización)\n.
+• ImportError: Si se intenta importar un módulo que no existe o no está instalado (ej: import modulo_inexistente)\n.
+
     """
-    explicacion.insert("1.0", texto)
+    explicacion.insert("0.2", texto)
     explicacion.config(state="disabled")  # Solo lectura
 
 def toggle_submenu_monedas():
@@ -62,7 +84,7 @@ def toggle_submenu_monedas():
     if submenu_monedas_visible:
         submenu_monedas.place_forget()
     else:
-        submenu_monedas.place(x=390, y=40)  
+        submenu_monedas.place(x=800, y=95)  
         submenu_monedas.lift()
     submenu_monedas_visible = not submenu_monedas_visible
 
@@ -74,55 +96,57 @@ ancho = ancho1 - 700
 alto = alto1 - 170
 raiz.title("Calculadora")
 raiz.geometry(f"{ancho}x{alto}") 
-raiz.config(bg="#D8FCFF")
-raiz.config(bd=5, relief="ridge")
-raiz.resizable(False, False)  
+raiz.config(bg="#233747")
+raiz.config(bd=1, relief="flat")
+raiz.resizable(False, False)
 
 
 icono_ruta = os.path.join(os.path.dirname(__file__), "calculadora_icono.ico")
 if os.path.exists(icono_ruta):
     raiz.iconbitmap(icono_ruta)
-
-frame = tk.Frame(raiz, width=ancho, height=80, bg="#FFFFFF")
+frame = tk.Frame(raiz, width=ancho, height=80, bg="#000000")
 frame.pack_propagate(False)  
-frame.pack(side="top", fill="both", expand=False)
+frame.pack(side="top", fill="x", expand=False)
 
-frame2 = tk.Frame(raiz, width=ancho, height=80, bg="#FFFFFF")
+frame2 = tk.Frame(raiz, width=ancho, height=80, bg="#000000")
 frame2.pack_propagate(False)  
-frame2.pack(side="top", fill="both", expand=False)
-submenu = tk.Frame(frame, background="#FFFFFF")
+frame2.pack(side="top", fill="x", expand=False)
+submenu = tk.Frame(frame, bg="#000000")
 
 # Entrada del usuario (editable)
-resultado = tk.Entry(frame, font=("Consolas", 30), bg="#FFFFFF", fg="#000000",
-                bd=0, justify="right")
+resultado = tk.Entry(frame, font=("Consolas", 30), bg="#FFFFFF", fg="#000000", insertbackground="#000000",
+                bd=0, relief="flat", justify="right")
 resultado.place(x=20, y=20, width=ancho - 40, height=50)
-resultado.config(bd=1, relief="ridge")
+resultado.config(bd=0, relief="flat")
+
+# Bind para permitir el uso de Enter para calcular
+resultado.bind("<Return>", lambda event: op.enter(resultado, salida, event))
 
 # Resultado (solo lectura, no editable)
-salida = tk.Entry(frame2, font=("Consolas", 25), bg="#EFEFEF", fg="black",
-                justify="right", state="readonly")
+salida = tk.Entry(frame2, font=("Consolas", 25), fg="#000000",
+            readonlybackground="#FFFFFF", justify="right", state="readonly", relief="flat", bd=0)
 salida.place(x=20, y=20, width=ancho - 40, height=45)
 
 
-frame1 = tk.Frame(raiz, width=ancho, height=alto-160, bg="#233747")
+frame1 = tk.Frame(raiz, width=ancho, height=alto-160, bg="#000000")
 frame1.pack_propagate(False) 
-frame1.pack(side="bottom", fill="both", expand=False)
+frame1.pack(side="bottom", fill="both", expand=True)
 
-submenu_monedas = tk.Frame(frame1, bg="#394757", bd=2, relief="flat")
+submenu_monedas = tk.Frame(frame1, bg="#000000", bd=2, relief="flat")
+submenu_monedas.config(width=200, height=600)
 
-tk.Button(submenu_monedas, text="COP → USD", font=("Consolas", 15),bg="#394757", fg="white", relief="groove",command=lambda: resultado.insert("insert", "COP()")).pack(side = "left", pady=5, padx=5)
+tk.Button(submenu_monedas, text="COP → USD", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "COP_USD()")).pack(side = "top", pady=5, padx=5)
+tk.Button(submenu_monedas, text="USD → COP", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "USD_COP()")).pack(side = "top", pady=5, padx=5)
+tk.Button(submenu_monedas, text="COP → EUR", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "COP_EUR(")).pack(side = "top", pady=5, padx=5)
+tk.Button(submenu_monedas, text="EUR → COP", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "EUR_COP(")).pack(side = "top", pady=5, padx=5)
+tk.Button(submenu_monedas, text="USD → EUR", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "USD_EUR(")).pack(side = "top", pady=5, padx=5)
+tk.Button(submenu_monedas, text="EUR → USD", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "EUR_USD(")).pack(side = "top", pady=5, padx=5)
 
-tk.Button(submenu_monedas, text="COP → EUR", font=("Consolas", 15),bg="#394757", fg="white", relief="groove",command=lambda: resultado.insert("insert", "COP()")).pack(side = "left", pady=5, padx=5)
+tk.Button(submenu_monedas, text="kg → lb", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "kg(")).pack(side = "top", pady=5, padx=5)
+tk.Button(submenu_monedas, text="g → oz", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "g(")).pack(side = "top", pady=5, padx=5)
 
-tk.Button(submenu_monedas, text="USD → EUR", font=("Consolas", 15),bg="#394757", fg="white", relief="groove",command=lambda: resultado.insert("insert", "USD(")).pack(side = "left", pady=5, padx=5)
 
-tk.Button(submenu_monedas, text="kg → lb", font=("Consolas", 15),bg="#394757", fg="white", relief="groove",command=lambda: resultado.insert("insert", "kg(")).pack(side = "left", pady=5, padx=5)
-
-tk.Button(submenu_monedas, text="g → oz", font=("Consolas", 15),bg="#394757", fg="white", relief="groove",command=lambda: resultado.insert("insert", "g(")).pack(side = "left", pady=5, padx=5)
-
-tk.Button(submenu_monedas, text="x", font=("Consolas", 15),bg="#FF0000", fg="white", relief="raised",command=toggle_submenu_monedas).pack(side = "left", pady=5, padx=5)
-
-op.crear_boton1(frame1, "Extras", 780, 40).config(command=toggle_submenu_monedas)
+op.crear_boton1(frame1, "Conversión", 780, 40).config(command=toggle_submenu_monedas)
 op.crear_boton1(frame1, "Tutorial", 1020, 40).config(command=mostrar_tutorial)
 op.crear_boton_con_offset(frame1, "(", 100, 260).config(command=lambda: resultado.insert("insert", "("))
 op.crear_boton_con_offset(frame1, ")", 220, 260).config(command=lambda: resultado.insert("insert", ")"))
@@ -160,9 +184,9 @@ op.crear_boton_con_offset(frame1, "log₂", 700, 620).config(command=lambda: res
 op.crear_boton_con_offset(frame1, "log₁₀", 700, 500).config(command=lambda: resultado.insert("insert", "log10("))
 op.crear_boton_con_offset(frame1, "log", 700, 380).config(command=lambda: resultado.insert("insert", "log("))
 
-op.crear_boton_con_offset(frame1, "√", 580, 740).config(command=lambda: resultado.insert("insert", "√("))
-op.crear_boton_con_offset(frame1, "³√", 580, 620).config(command=lambda: resultado.insert("insert", "³√("))
-op.crear_boton_con_offset(frame1, "ⁿ√x", 580, 500).config(command=lambda: resultado.insert("insert", "ⁿ√("))
+op.crear_boton_con_offset(frame1, "√", 580, 740).config(command=lambda: resultado.insert("insert", "raiz2("))
+op.crear_boton_con_offset(frame1, "³√", 580, 620).config(command=lambda: resultado.insert("insert", "raiz3("))
+op.crear_boton_con_offset(frame1, "ⁿ√x", 580, 500).config(command=lambda: resultado.insert("insert", "raizn("))
 op.crear_boton_con_offset(frame1, "MCD", 580, 380).config(command=lambda: resultado.insert("insert", "MCD("))
 
 op.crear_boton_con_offset(frame1, "fibo", 460, 740).config(command=lambda: resultado.insert("insert", "fibo("))

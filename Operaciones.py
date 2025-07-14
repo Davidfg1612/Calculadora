@@ -73,7 +73,7 @@ def crear_subboton(frame, texto, x, y):
         frame,
         text=texto,
         font=("Consolas", 20),
-        bg="#394757",
+        bg="#262A2E",
         fg="#FFFFFF",
         bd=1,
         relief="flat",
@@ -85,7 +85,7 @@ def crear_boton(frame, texto, x, y):
         frame,
         text=texto,
         font=("Consolas", 20),
-        bg="#394757",
+        bg="#262A2E",
         fg="#FFFFFF",
         width=5,
         height=2,
@@ -100,7 +100,7 @@ def crear_boton1(frame, texto, x, y, **kwargs):
         frame,
         text=texto,
         font=("Consolas", 20),
-        bg="#394757",
+        bg="#262A2E",
         fg="#FFFFFF",
         bd=1,
         relief="flat",
@@ -119,14 +119,23 @@ def borrar_ultimo(campo):
     if pos > 0:
         campo.delete(pos - 1)
 
-def Pesos_a_dolares(pesos):
-    return pesos * 0.00025
+def COP_a_USD(x):
+    return x / 4000  # Ejemplo de tasa
 
-def Pesos_a_euros(pesos):
-    return pesos * 0.00022
+def USD_a_COP(x):
+    return x * 4000
 
-def Dolares_a_euros(dolares):
-    return dolares * 0.92
+def COP_a_EUR(x):
+    return x / 4400
+
+def EUR_a_COP(x):
+    return x * 4400
+
+def USD_a_EUR(x):
+    return x * 0.91
+
+def EUR_a_USD(x):
+    return x / 0.91
 
 def kg_a_lb(kg):
     return kg * 2.20462
@@ -151,9 +160,9 @@ contexto_eval = {
     "log10": math.log10,
     "log2": math.log2,
     # Raíces y potencias
-    "√": math.sqrt,  
-    "³√": raiz_cubica,    
-    "ⁿ√x": raiz_enesima, 
+    "raiz2": math.sqrt,  
+    "raiz3": raiz_cubica,    
+    "raizn": raiz_enesima, 
     "exp": math.exp,
     # Operaciones avanzadas
     "MCD": math.gcd,
@@ -169,9 +178,12 @@ contexto_eval = {
     "round+": math.ceil,  
     "round-": math.floor,
     "round": round,
-    "COP": Pesos_a_dolares,
-    "EUR": Pesos_a_euros,
-    "USD": Dolares_a_euros,
+    "COP_USD": COP_a_USD,
+    "EUR_COP": EUR_a_COP,
+    "USD_EUR": USD_a_EUR,
+    "COP_EUR": COP_a_EUR,
+    "USD_COP": USD_a_COP,
+    "EUR_USD": EUR_a_USD,
     "kg": kg_a_lb,
     "g": g_a_oz,
 }
@@ -187,6 +199,7 @@ def evaluar(entrada, salida):
         salida.delete(0, tk.END)               # Limpia el contenido anterior
         salida.insert(0, str(resultado_valor)) # Inserta el nuevo resultado
         salida.config(state="readonly")        # Lo bloquea 
+
     except Exception as e:
         salida.config(state="normal")
         salida.delete(0, tk.END)
@@ -196,3 +209,6 @@ def evaluar(entrada, salida):
 def calcular(resultado, salida):
     evaluar(resultado, salida)
 
+def enter(entrada, salida, event=None):
+    evaluar(entrada, salida)
+# Permite el comportamiento normal para otras teclas

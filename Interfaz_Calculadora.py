@@ -77,139 +77,124 @@ Funciones disponibles:
 
     """
     explicacion.insert("0.2", texto)
-    explicacion.config(state="disabled")  # Solo lectura
+    explicacion.config(state="disabled")
 
 def toggle_submenu_monedas():
     global submenu_monedas_visible
     if submenu_monedas_visible:
         submenu_monedas.place_forget()
     else:
-        submenu_monedas.place(x=800, y=95)  
+        submenu_monedas.place(x=500, y=25)
         submenu_monedas.lift()
     submenu_monedas_visible = not submenu_monedas_visible
 
 
 raiz = tk.Tk()
-ancho1 = raiz.winfo_screenwidth()
-alto1 = raiz.winfo_screenheight()
-ancho = ancho1 - 700
-alto = alto1 - 170
+ancho_total = raiz.winfo_screenwidth()
+alto_total = raiz.winfo_screenheight()
+raiz.geometry(f"{int(ancho_total * 0.8)}x{int(alto_total * 0.8)}")
 raiz.title("Calculadora")
-raiz.geometry(f"{ancho}x{alto}") 
 raiz.config(bg="#233747")
 raiz.config(bd=1, relief="flat")
-raiz.resizable(False, False)
+
 
 
 icono_ruta = os.path.join(os.path.dirname(__file__), "calculadora_icono.ico")
 if os.path.exists(icono_ruta):
     raiz.iconbitmap(icono_ruta)
-frame = tk.Frame(raiz, width=ancho, height=80, bg="#000000")
-frame.pack_propagate(False)  
-frame.pack(side="top", fill="x", expand=False)
 
-frame2 = tk.Frame(raiz, width=ancho, height=80, bg="#000000")
-frame2.pack_propagate(False)  
-frame2.pack(side="top", fill="x", expand=False)
-submenu = tk.Frame(frame, bg="#000000")
+frame = tk.Frame(raiz, bg="#DDDDDD")
+frame.pack(side="top", expand=False, fill="x")
+
+frame2 = tk.Frame(raiz, bg="#DDDDDD")
+frame2.pack(side="top",expand=False, fill="x")
+
 
 # Entrada del usuario (editable)
 resultado = tk.Entry(frame, font=("Consolas", 30), bg="#FFFFFF", fg="#000000", insertbackground="#000000",
-                bd=0, relief="flat", justify="right")
-resultado.place(x=20, y=20, width=ancho - 40, height=50)
-resultado.config(bd=0, relief="flat")
+                justify="right")
+resultado.pack(padx=20, pady=20, expand=True, fill="x")
+
+# Resultado (solo lectura, no editable)
+salida = tk.Entry(frame2, font=("Consolas", 25), fg="#000000",
+            readonlybackground="#FFFFFF", justify="right", state="readonly")
+salida.pack(padx=20, pady=20, expand=True, fill="x")
+
+
+frame1 = tk.Frame(raiz, width=ancho_total * 0.8 - 800, bg="#DDDDDD")
+frame1.pack(side="top", expand=True, fill="both")
+
+for fila in range(7):
+    frame1.rowconfigure(fila, weight=1)
+
+for col in range(9):
+    frame1.columnconfigure(col, weight=1, uniform="col")
 
 # Bind para permitir el uso de Enter para calcular
 resultado.bind("<Return>", lambda event: op.enter(resultado, salida, event))
 
-# Resultado (solo lectura, no editable)
-salida = tk.Entry(frame2, font=("Consolas", 25), fg="#000000",
-            readonlybackground="#FFFFFF", justify="right", state="readonly", relief="flat", bd=0)
-salida.place(x=20, y=20, width=ancho - 40, height=45)
+submenu_monedas = tk.Frame(frame1, bg="#FFFFFF", bd=2, relief="raised")
+
+tk.Button(submenu_monedas, text="COP → USD", font=("Consolas", 15),bg="#FFFFFF", fg="#000000", command=lambda: resultado.insert("insert", "COP_USD()")).pack(pady=5, padx=5)
+tk.Button(submenu_monedas, text="USD → COP", font=("Consolas", 15),bg="#FFFFFF", fg="#000000", command=lambda: resultado.insert("insert", "USD_COP()")).pack(pady=5, padx=5)
+tk.Button(submenu_monedas, text="COP → EUR", font=("Consolas", 15),bg="#FFFFFF", fg="#000000", command=lambda: resultado.insert("insert", "COP_EUR(")).pack(pady=5, padx=5)
+tk.Button(submenu_monedas, text="EUR → COP", font=("Consolas", 15),bg="#FFFFFF", fg="#000000", command=lambda: resultado.insert("insert", "EUR_COP(")).pack(pady=5, padx=5)
+tk.Button(submenu_monedas, text="USD → EUR", font=("Consolas", 15),bg="#FFFFFF", fg="#000000", command=lambda: resultado.insert("insert", "USD_EUR(")).pack(pady=5, padx=5)
+tk.Button(submenu_monedas, text="EUR → USD", font=("Consolas", 15),bg="#FFFFFF", fg="#000000", command=lambda: resultado.insert("insert", "EUR_USD(")).pack(pady=5, padx=5)
+tk.Button(submenu_monedas, text="kg → lb", font=("Consolas", 15),bg="#FFFFFF", fg="#000000", command=lambda: resultado.insert("insert", "kg(")).pack(pady=5, padx=5, fill="x")
+tk.Button(submenu_monedas, text="g → oz", font=("Consolas", 15),bg="#FFFFFF", fg="#000000", command=lambda: resultado.insert("insert", "g(")).pack(pady=5, padx=5, fill="x")
 
 
-frame1 = tk.Frame(raiz, width=ancho, height=alto-160, bg="#000000")
-frame1.pack_propagate(False) 
-frame1.pack(side="bottom", fill="both", expand=True)
 
-submenu_monedas = tk.Frame(frame1, bg="#000000", bd=2, relief="flat")
-submenu_monedas.config(width=200, height=600)
+op.crear_boton_estilo(frame1, "Off", 0, 0, estilo="rojo", comando=raiz.quit)
+op.crear_boton_estilo(frame1, "Extras", 0, 1, estilo="verde", comando=toggle_submenu_monedas)
+op.crear_boton_estilo(frame1, "Tutorial", 0, 2, comando=mostrar_tutorial)
+op.crear_boton_estilo(frame1, "AC", 1, 7, estilo="rojo", comando=lambda: op.borrar_todo(resultado))
+op.crear_boton_estilo(frame1, "←", 1, 8, estilo="rojo", comando=lambda: op.borrar_ultimo(resultado))
 
-tk.Button(submenu_monedas, text="COP → USD", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "COP_USD()")).pack(side = "top", pady=5, padx=5)
-tk.Button(submenu_monedas, text="USD → COP", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "USD_COP()")).pack(side = "top", pady=5, padx=5)
-tk.Button(submenu_monedas, text="COP → EUR", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "COP_EUR(")).pack(side = "top", pady=5, padx=5)
-tk.Button(submenu_monedas, text="EUR → COP", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "EUR_COP(")).pack(side = "top", pady=5, padx=5)
-tk.Button(submenu_monedas, text="USD → EUR", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "USD_EUR(")).pack(side = "top", pady=5, padx=5)
-tk.Button(submenu_monedas, text="EUR → USD", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "EUR_USD(")).pack(side = "top", pady=5, padx=5)
+op.crear_boton_estilo(frame1, "(", 1, 0, comando=lambda: resultado.insert("insert", "("))
+op.crear_boton_estilo(frame1, ")", 1, 1, comando=lambda: resultado.insert("insert", ")"))
+op.crear_boton_estilo(frame1, "π", 1, 2, comando=lambda: resultado.insert("insert", "π"))
+op.crear_boton_estilo(frame1, "e", 1, 3, comando=lambda: resultado.insert("insert", "e"))
+op.crear_boton_estilo(frame1, "^", 5, 3, comando=lambda: resultado.insert("insert", "**"))
 
-tk.Button(submenu_monedas, text="kg → lb", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "kg(")).pack(side = "top", pady=5, padx=5)
-tk.Button(submenu_monedas, text="g → oz", font=("Consolas", 15),bg="#000000", fg="white", relief="flat", command=lambda: resultado.insert("insert", "g(")).pack(side = "top", pady=5, padx=5)
+op.crear_boton_estilo(frame1, "x!", 2, 0, comando=lambda: resultado.insert("insert", "factorial("))
+op.crear_boton_estilo(frame1, "|x|", 2, 1, comando=lambda: resultado.insert("insert", "abs("))
+op.crear_boton_estilo(frame1, "MCM", 3, 2, comando=lambda: resultado.insert("insert", "MCM("))
+op.crear_boton_estilo(frame1, "MCD", 2, 2, comando=lambda: resultado.insert("insert", "MCD("))
+op.crear_boton_estilo(frame1, "porc", 3, 0, comando=lambda: resultado.insert("insert", "porc("))
+op.crear_boton_estilo(frame1, "7", 2, 5, comando=lambda: resultado.insert("insert", "7"))
+op.crear_boton_estilo(frame1, "8", 2, 6, comando=lambda: resultado.insert("insert", "8"))
+op.crear_boton_estilo(frame1, "9", 2, 7, comando=lambda: resultado.insert("insert", "9"))
+op.crear_boton_estilo(frame1, "ⁿ√x", 2, 3, comando=lambda: resultado.insert("insert", "raizn("))
 
+op.crear_boton_estilo(frame1, "hypot", 5, 0, comando=lambda: resultado.insert("insert", "hypot("))
+op.crear_boton_estilo(frame1, "cos", 3, 1, comando=lambda: resultado.insert("insert", "cos("))
+op.crear_boton_estilo(frame1, "int", 4, 2, comando=lambda: resultado.insert("insert", "int("))
+op.crear_boton_estilo(frame1, "³√", 3, 3, comando=lambda: resultado.insert("insert", "raiz3("))
+op.crear_boton_estilo(frame1, "4", 3, 5, comando=lambda: resultado.insert("insert", "4"))
+op.crear_boton_estilo(frame1, "5",  3, 6, comando=lambda: resultado.insert("insert", "5"))
+op.crear_boton_estilo(frame1, "6", 3, 7, comando=lambda: resultado.insert("insert", "6"))
+op.crear_boton_estilo(frame1, "√", 4, 3, comando=lambda: resultado.insert("insert", "raiz2("))
 
-op.crear_boton1(frame1, "Conversión", 780, 40).config(command=toggle_submenu_monedas)
-op.crear_boton1(frame1, "Tutorial", 1020, 40).config(command=mostrar_tutorial)
-op.crear_boton_con_offset(frame1, "(", 100, 260).config(command=lambda: resultado.insert("insert", "("))
-op.crear_boton_con_offset(frame1, ")", 220, 260).config(command=lambda: resultado.insert("insert", ")"))
-op.crear_boton_con_offset(frame1, "|x|", 340, 380).config(command=lambda: resultado.insert("insert", "abs("))
+op.crear_boton_estilo(frame1, "log", 3, 4, comando=lambda: resultado.insert("insert", "log("))
+op.crear_boton_estilo(frame1, "tan", 4, 1, comando=lambda: resultado.insert("insert", "tan("))
+op.crear_boton_estilo(frame1, "e^x", 5, 2, comando=lambda: resultado.insert("insert", "exp("))
+op.crear_boton_estilo(frame1, "+", 2, 8, comando=lambda: resultado.insert("insert", "+"))
+op.crear_boton_estilo(frame1, "log₁₀",  2, 4, comando=lambda: resultado.insert("insert", "log10("))
+op.crear_boton_estilo(frame1, "1", 4, 5, comando=lambda: resultado.insert("insert", "1"))
+op.crear_boton_estilo(frame1, "2", 4, 6, comando=lambda: resultado.insert("insert", "2"))
+op.crear_boton_estilo(frame1, "3", 4, 7, comando=lambda: resultado.insert("insert", "3"))
+op.crear_boton_estilo(frame1, "-", 3, 8, comando=lambda: resultado.insert("insert", "-"))
 
-op.crear_boton_con_offset(frame1, "π", 340, 260).config(command=lambda: resultado.insert("insert", "π"))
-op.crear_boton_con_offset(frame1, "e", 460, 260).config(command=lambda: resultado.insert("insert", "e"))
-op.crear_boton_con_offset(frame1, "←", 1180, 260).config(command=lambda: op.borrar_ultimo(resultado))
-op.crear_boton_con_offset(frame1, "AC", 1060, 260).config(command=lambda: op.borrar_todo(resultado))
-
-op.crear_boton_con_offset(frame1, "0", 820, 740).config(command=lambda: resultado.insert("insert", "0"))
-op.crear_boton_con_offset(frame1, ".", 940, 740).config(command=lambda: resultado.insert("insert", "."))
-op.crear_boton_con_offset(frame1, "=", 1060, 740).config(command=lambda: op.calcular(resultado, salida))
-
-op.crear_boton_con_offset(frame1, "1", 820, 620).config(command=lambda: resultado.insert("insert", "1"))
-op.crear_boton_con_offset(frame1, "2", 940, 620).config(command=lambda: resultado.insert("insert", "2"))
-op.crear_boton_con_offset(frame1, "3", 1060, 620).config(command=lambda: resultado.insert("insert", "3"))
-
-op.crear_boton_con_offset(frame1, "4", 820, 500).config(command=lambda: resultado.insert("insert", "4"))
-op.crear_boton_con_offset(frame1, "5", 940, 500).config(command=lambda: resultado.insert("insert", "5"))
-op.crear_boton_con_offset(frame1, "6", 1060, 500).config(command=lambda: resultado.insert("insert", "6"))
-
-op.crear_boton_con_offset(frame1, "7", 820, 380).config(command=lambda: resultado.insert("insert", "7"))
-op.crear_boton_con_offset(frame1, "8", 940, 380).config(command=lambda: resultado.insert("insert", "8"))
-op.crear_boton_con_offset(frame1, "9", 1060, 380).config(command=lambda: resultado.insert("insert", "9"))
-
-op.crear_boton_con_offset(frame1, "+", 1180, 380).config(command=lambda: resultado.insert("insert", "+"))
-op.crear_boton_con_offset(frame1, "-", 1180, 500).config(command=lambda: resultado.insert("insert", "-"))
-op.crear_boton_con_offset(frame1, "*", 1180, 620).config(command=lambda: resultado.insert("insert", "*"))
-op.crear_boton_con_offset(frame1, "/", 1180, 740).config(command=lambda: resultado.insert("insert", "/"))
-
-op.crear_boton_con_offset(frame1, "^", 580, 260).config(command=lambda: resultado.insert("insert", "**"))
-op.crear_boton_con_offset(frame1, ",", 700, 740).config(command=lambda: resultado.insert("insert", ","))
-op.crear_boton_con_offset(frame1, "log₂", 700, 620).config(command=lambda: resultado.insert("insert", "log2("))
-op.crear_boton_con_offset(frame1, "log₁₀", 700, 500).config(command=lambda: resultado.insert("insert", "log10("))
-op.crear_boton_con_offset(frame1, "log", 700, 380).config(command=lambda: resultado.insert("insert", "log("))
-
-op.crear_boton_con_offset(frame1, "√", 580, 740).config(command=lambda: resultado.insert("insert", "raiz2("))
-op.crear_boton_con_offset(frame1, "³√", 580, 620).config(command=lambda: resultado.insert("insert", "raiz3("))
-op.crear_boton_con_offset(frame1, "ⁿ√x", 580, 500).config(command=lambda: resultado.insert("insert", "raizn("))
-op.crear_boton_con_offset(frame1, "MCD", 580, 380).config(command=lambda: resultado.insert("insert", "MCD("))
-
-op.crear_boton_con_offset(frame1, "fibo", 460, 740).config(command=lambda: resultado.insert("insert", "fibo("))
-op.crear_boton_con_offset(frame1, "int", 460, 620).config(command=lambda: resultado.insert("insert", "int("))
-op.crear_boton_con_offset(frame1, "e^x", 460, 500).config(command=lambda: resultado.insert("insert", "exp("))
-op.crear_boton_con_offset(frame1, "MCM", 460, 380).config(command=lambda: resultado.insert("insert", "MCM("))
-
-op.crear_boton_con_offset(frame1, "sin", 340, 740).config(command=lambda: resultado.insert("insert", "sin("))
-op.crear_boton_con_offset(frame1, "cos", 340, 620).config(command=lambda: resultado.insert("insert", "cos("))
-op.crear_boton_con_offset(frame1, "tan", 340, 500).config(command=lambda: resultado.insert("insert", "tan("))
-
-op.crear_boton_con_offset(frame1, "grad", 220, 740).config(command=lambda: resultado.insert("insert", "grad("))
-op.crear_boton_con_offset(frame1, "round-", 220, 620).config(command=lambda: resultado.insert("insert", "round-("))
-op.crear_boton_con_offset(frame1, "round", 220, 500).config(command=lambda: resultado.insert("insert", "round("))
-op.crear_boton_con_offset(frame1, "round+", 220, 380).config(command=lambda: resultado.insert("insert", "round+("))
-op.crear_boton_con_offset(frame1, "grad", 100, 740).config(command=lambda: resultado.insert("insert", "grad("))
-op.crear_boton_con_offset(frame1, "hypot", 100, 620).config(command=lambda: resultado.insert("insert", "hypot("))
-op.crear_boton_con_offset(frame1, "porc", 100, 500).config(command=lambda: resultado.insert("insert", "porc("))
-op.crear_boton_con_offset(frame1, "x!", 100, 380).config(command=lambda: resultado.insert("insert", "factorial("))
-
-
-op.crear_boton(frame1, "Off", 20, 20).config(command=raiz.quit)
-
-
+op.crear_boton_estilo(frame1, "log₂", 4, 4, comando=lambda: resultado.insert("insert", "log2("))
+op.crear_boton_estilo(frame1, "sin", 5, 1, comando=lambda: resultado.insert("insert", "sin("))
+op.crear_boton_estilo(frame1, "fibo", 4, 0, comando=lambda: resultado.insert("insert", "fibo("))
+op.crear_boton_estilo(frame1, "*", 4, 8, comando=lambda: resultado.insert("insert", "*"))
+op.crear_boton_estilo(frame1, ",", 5, 4, comando=lambda: resultado.insert("insert", ","))
+op.crear_boton_estilo(frame1, "0", 5, 5, comando=lambda: resultado.insert("insert", "0"))
+op.crear_boton_estilo(frame1, ".", 5, 6, comando=lambda: resultado.insert("insert", "."))
+op.crear_boton_estilo(frame1, "=", 5, 7, estilo="azul", comando=lambda: op.calcular(resultado, salida))
+op.crear_boton_estilo(frame1, "/", 5, 8, comando=lambda: resultado.insert("insert", "/"))
 
 raiz.mainloop()

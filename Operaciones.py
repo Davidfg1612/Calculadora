@@ -68,49 +68,7 @@ def porcentaje(porcentaje, total):
 def entero(numero):
     return int(numero)
 
-def crear_subboton(frame, texto, x, y):
-    subboton = tk.Button(
-        frame,
-        text=texto,
-        font=("Consolas", 20),
-        bg="#262A2E",
-        fg="#FFFFFF",
-        bd=1,
-        relief="flat",
-    )
-    subboton.place(x=x, y=y)
-    return subboton
-def crear_boton(frame, texto, x, y):
-    boton = tk.Button(
-        frame,
-        text=texto,
-        font=("Consolas", 20),
-        bg="#262A2E",
-        fg="#FFFFFF",
-        width=5,
-        height=2,
-        bd=1,
-        relief="flat"
-    )
-    boton.place(x=x, y=y)
-    return boton
-
-def crear_boton1(frame, texto, x, y, **kwargs):
-    boton = tk.Button(
-        frame,
-        text=texto,
-        font=("Consolas", 20),
-        bg="#262A2E",
-        fg="#FFFFFF",
-        bd=1,
-        relief="flat",
-        **kwargs
-    )
-    boton.place(x=x, y=y)
-    return boton
-def crear_boton_con_offset(frame, texto, x, y, **kwargs):
-    return crear_boton(frame, texto, x - 80, y - 120, **kwargs)
-
+    boton.lace(x=x, y=y)
 def borrar_todo(campo):
     campo.delete(0, tk.END)
 
@@ -211,4 +169,34 @@ def calcular(resultado, salida):
 
 def enter(entrada, salida, event=None):
     evaluar(entrada, salida)
-# Permite el comportamiento normal para otras teclas
+
+
+def crear_boton_estilo(parent, texto, fila, columna, comando=None,
+                    colspan=1, rowspan=1, estilo="normal"):
+    estilos = {
+        "normal": {"bg": "#FFFFFF", "fg": "#000000"},
+        "azul":   {"bg": "#007BFF", "fg": "#FFFFFF"},
+        "rojo":   {"bg": "#FF4136", "fg": "#FFFFFF"},
+        "verde":   {"bg": "#2FB618", "fg": "#FFFFFF"}, 
+    }
+
+    colores = estilos.get(estilo, estilos["normal"])
+
+    boton = tk.Button(
+        parent,
+        text=texto,
+        font=("Consolas", 20),
+        width=8, height=4,
+        bg=colores["bg"],
+        fg=colores["fg"],
+        command=comando
+    )
+    boton.grid(
+        row=fila,
+        column=columna,
+        columnspan=colspan,
+        rowspan=rowspan,
+        padx=10,
+        pady=10
+    )
+    return boton
